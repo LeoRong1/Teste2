@@ -11,6 +11,7 @@ const EmprestimoForm = ({ onSubmit, isLoading }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!usuarioId || livros.length === 0 || !dataDevolucao) {
+      console.log({usuarioId, livros, dataDevolucao})
       alert("Selecione um usuário, adicione livros e defina uma data de devolução.");
       return;
     }
@@ -18,7 +19,7 @@ const EmprestimoForm = ({ onSubmit, isLoading }) => {
     const emprestimoData = {
       usuario_id: usuarioId,
       data_devolucao_prevista: dataDevolucao,
-      livros: livros.map(({ livro_id }) => ({ livro_id }))
+      livros: livros.map((item) => ({ livro_id: item.livro_id }))
     };
 
     await onSubmit(emprestimoData);
@@ -26,6 +27,16 @@ const EmprestimoForm = ({ onSubmit, isLoading }) => {
     usuarioSelectRef.current?.reset();
     setLivros([]);
     setDataDevolucao('');
+  };
+
+  const handleLivroAdd = (livro) => {
+    setLivros((prevLivros) => {
+        if (prevLivros.find(l => l.livro_id === livro.livro_id)) {
+            alert('Este livro já foi adicionado.');
+            return prevLivros;
+        }
+        return [...prevLivros, livro];
+    });
   };
 
   const removerLivro = (livroId) => {
@@ -50,7 +61,7 @@ const EmprestimoForm = ({ onSubmit, isLoading }) => {
               onChange={(e) => setDataDevolucao(e.target.value)} 
             />
           </div>
-          <LivroSelect onLivroAdd={(livro) => setLivros([...livros, livro])} />
+          <LivroSelect onLivroAdd={handleLivroAdd} />
 
           {livros.length > 0 && (
             <div className="mb-3">

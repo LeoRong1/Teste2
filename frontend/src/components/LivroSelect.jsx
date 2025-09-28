@@ -21,10 +21,12 @@ const LivroSelect = ({ onLivroAdd }) => {
   const handleAdd = () => {
     if (!selectedLivro) return;
     const livro = livros.find(l => l.id === parseInt(selectedLivro));
-    onLivroAdd({
-      livro_id: livro.id,
-      livro: livro
-    });
+    if (livro) {
+        onLivroAdd({
+            livro_id: livro.id,
+            livro: livro
+        });
+    }
     setSelectedLivro("");
   };
 

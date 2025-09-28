@@ -1,10 +1,10 @@
 import * as usuarioRepo from '../repositories/usuario.repo.js';
 
 export class UsuarioService {
-    static async findAllUsuarios({ page = 1, limit = 10 } = {}) {
+    static async findAllUsuarios({ page = 1, limit = 10, nome } = {}) {
         const pageNum = Math.max(1, parseInt(page) || 1);
         const limitNum = Math.max(1, parseInt(limit) || 10);
-        return await usuarioRepo.findAllUsuarios({ page: pageNum, limit: limitNum });
+        return await usuarioRepo.findAllUsuarios({ page: pageNum, limit: limitNum, nome });
     }
 
     static async findUsuarioWithEmprestimos(id) {

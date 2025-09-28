@@ -1,12 +1,26 @@
 import pool from "../config/db.js";
 
-export async function findAllUsuarios({ page = 1, limit = 10 }) {
+export async function findAllUsuarios({ page = 1, limit = 10, nome }) {
     const offset = (page - 1) * limit;
-    const [rows] = await pool.query(
-        'SELECT id, nome, email, telefone, createdAt as criado_em FROM usuarios ORDER BY id LIMIT ? OFFSET ?',
-        [Number(limit), Number(offset)]
-    );
-    const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM usuarios');
+
+    let query = 'SELECT id, nome, email, telefone, createdAt as criado_em FROM usuarios';
+    let countQuery = 'SELECT COUNT(*) as total FROM usuarios';
+    const params = [];
+    const countParams = [];
+
+    if (nome) {
+        query += ' WHERE nome LIKE ?';
+        countQuery += ' WHERE nome LIKE ?';
+        params.push(`%${nome}%`);
+        countParams.push(`%${nome}%`);
+    }
+
+    query += ' ORDER BY id LIMIT ? OFFSET ?';
+    params.push(Number(limit), Number(offset));
+
+
+    const [rows] = await pool.query(query, params);
+    const [[{ total }]] = await pool.query(countQuery, countParams);
     return { data: rows, page: Number(page), limit: Number(limit), total };
 }
 
