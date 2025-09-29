@@ -3,8 +3,8 @@ import pool from "../config/db.js";
 export async function insertEmprestimoLivro(emprestimoId, livros, conn) {
     for (const livro of livros) {
         await conn.query(`
-            INSERT INTO emprestimo_livros (emprestimo_id, livro_id)
-            VALUES (?, ?)`, [
+            INSERT INTO emprestimo_livros (emprestimo_id, livro_id, createdAt, updatedAt)
+            VALUES (?, ?, NOW(), NOW())`, [
                 emprestimoId,
                 livro.id
             ]);

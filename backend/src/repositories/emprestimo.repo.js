@@ -8,7 +8,7 @@ export async function createEmprestimo({ usuario_id, data_devolucao_prevista, li
     await conn.beginTransaction();
 
     const [result] = await conn.query(
-      `INSERT INTO emprestimos (usuario_id, data_emprestimo, data_devolucao_prevista) VALUES (?, CURDATE(), ?)`,
+      `INSERT INTO emprestimos (usuario_id, data_emprestimo, data_devolucao_prevista, createdAt, updatedAt) VALUES (?, CURDATE(), ?, NOW(), NOW())`,
       [usuario_id, data_devolucao_prevista]
     );
 
@@ -17,6 +17,7 @@ export async function createEmprestimo({ usuario_id, data_devolucao_prevista, li
     if (livros && livros.length > 0) {
       await emprestimoLivroRepo.insertEmprestimoLivro(emprestimoId, livros, conn);
       await livroRepo.updateQuantidadeLivros(livros, conn);
+      console.log('teste')
     }
 
     await conn.commit();
@@ -31,6 +32,7 @@ export async function createEmprestimo({ usuario_id, data_devolucao_prevista, li
 
     return emprestimo;
   } catch (error) {
+    console.error(error)
     await conn.rollback();
     throw error;
   } finally {

@@ -13,6 +13,7 @@ export class EmprestimoService {
         }
 
         const usuario = await usuarioRepo.findUsuarioById(usuarioId);
+        console.log(usuario,usuarioId)
         if (!usuario) {
             const error = new Error('Usuário não encontrado');
             error.status = 404;

@@ -10,8 +10,8 @@ const EmprestimoForm = ({ onSubmit, isLoading }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log({usuarioId, livros, dataDevolucao})
     if (!usuarioId || livros.length === 0 || !dataDevolucao) {
-      console.log({usuarioId, livros, dataDevolucao})
       alert("Selecione um usuário, adicione livros e defina uma data de devolução.");
       return;
     }

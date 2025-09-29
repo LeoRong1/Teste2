@@ -3,6 +3,7 @@ import { EmprestimoService } from "../services/emprestimo.service.js";
 export async function postEmprestimo(req, res) {
    try {
      const { usuario_id, data_devolucao_prevista, livros } = req.body;
+     console.log(req.body)
      const created = await EmprestimoService.createEmprestimo({ usuario_id, data_devolucao_prevista, livros });
      res.status(201).json(created);
    } catch (error) {
