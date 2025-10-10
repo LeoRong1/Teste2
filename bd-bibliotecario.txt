@@ -1,0 +1,55 @@
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    telefone VARCHAR(20),
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS livros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    autor VARCHAR(255) NOT NULL,
+    isbn VARCHAR(20) UNIQUE,
+    quantidade_disponivel INT NOT NULL DEFAULT 0,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS emprestimos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data_emprestimo DATE NOT NULL,
+    data_devolucao_prevista DATE NOT NULL,
+    data_devolucao_real DATE NULL, -- Preenchido quando o livro é devolvido
+    status VARCHAR(50) DEFAULT 'Em Andamento', -- Ex: Em Andamento, Atrasado, Devolvido
+    usuario_id INT NOT NULL,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS emprestimo_livros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    emprestimo_id INT NOT NULL,
+    livro_id INT NOT NULL,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL,
+    FOREIGN KEY (emprestimo_id) REFERENCES emprestimos(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    -- Garante que um mesmo livro não seja adicionado duas vezes no mesmo empréstimo
+    UNIQUE KEY `unique_emprestimo_livro` (`emprestimo_id`, `livro_id`)
+);
+
+-- Inserindo alguns dados de exemplo para facilitar os testes
+-- Usuários
+INSERT INTO usuarios (nome, email, telefone, createdAt, updatedAt) VALUES
+('João da Silva', 'joao.silva@example.com', '11999998888', NOW(), NOW()),
+('Maria Oliveira', 'maria.oliveira@example.com', '21988887777', NOW(), NOW());
+
+-- Livros
+INSERT INTO livros (titulo, autor, isbn, quantidade_disponivel, createdAt, updatedAt) VALUES
+('O Senhor dos Anéis: A Sociedade do Anel', 'J.R.R. Tolkien', '978-8533613379', 5, NOW(), NOW()),
+('Código Limpo: Habilidades Práticas do Agile Software', 'Robert C. Martin', '978-8576082675', 3, NOW(), NOW()),
+('O Guia do Mochileiro das Galáxias', 'Douglas Adams', '978-8580415535', 7, NOW(), NOW()),
+('React: Up & Running', 'Stoyan Stefanov', '978-1491931820', 4, NOW(), NOW());
